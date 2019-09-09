@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.8.1'
+    }
+}
+plugins {
+    id 'idea'
+    id 'java'
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.0'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.0'
+}
+apply plugin: 'com.novoda.bintray-release'
+
+ext {
+    kotlinVersion = '1.3.0'
+    vertxVersion = '3.6.2'
+    springVersion = '5.1.4.RELEASE'
+}
+repositories {
+   // mavenCentral()
+    jcenter()
+}
+
+mainClassName = ''
+dependencies {
+    compile "io.vertx:vertx-core:$vertxVersion"
+    compile "io.vertx:vertx-rx-java:$vertxVersion"
+    compile "org.springframework:spring-context:$springVersion"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+
+    testCompile group: 'io.vertx', name: 'vertx-hazelcast', version: '3.5.2'
+
+}
+
+compileKotlin {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+}
+version = "1.0.1"
+jar {
+    // basename = ""
+    from(compileJava.outputs)
+}
+
+publish {
+    repoName = 'vts'
+    userOrg = 'kavi'
+    groupId = 'com.kavi'
+    artifactId = 'vertx-beans'
+    publishVersion = '1.3.0'
+    desc = 'Vertx with Spring Integration by kotlin'
+    website = 'https://vts.kavi.tech'
+}

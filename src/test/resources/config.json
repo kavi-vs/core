@@ -1,0 +1,19 @@
+{
+  "asyncThreadPool": {
+    "corePoolSize": 100
+  },
+  "vertxOptions": {
+    "clustered": true
+  },
+  "dataSource":{
+    "username": "root",
+    "password": "208772",
+    "driverClassName": "com.mysql.cj.jdbc.Driver",
+    "url": "jdbc:mysql://127.0.0.1:3306/test?characterEncoding=UTF-8&serverTimezone=UTC"
+  },
+  "mybatis": {
+    "typeAliasesPackage": "entity",
+    "basePackage": "dao",
+    "mapperLocations": "classpath:mapper/*.xml"
+  }
+}
