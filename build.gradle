@@ -32,6 +32,9 @@ dependencies {
     compile "org.springframework:spring-context:$springVersion"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
+    compile 'io.reactiverse:consul-cluster-manager:1.2.1'
+    compile 'io.vertx:vertx-consul-client:3.8.1'
+    
     testCompile group: 'io.vertx', name: 'vertx-hazelcast', version: '3.5.2'
 
 }

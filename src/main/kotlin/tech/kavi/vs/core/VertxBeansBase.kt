@@ -2,15 +2,13 @@ package tech.kavi.vs.core
 
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
+import io.vertx.core.Vertx
 import io.vertx.core.VertxOptions
 import io.vertx.core.eventbus.EventBusOptions
-import io.vertx.core.eventbus.impl.clustered.ClusteredEventBus
-import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.core.metrics.MetricsOptions
 import io.vertx.core.spi.cluster.ClusterManager
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.core.env.Environment
 import java.io.*
@@ -60,7 +58,8 @@ open class VertxBeansBase {
 
     @Bean
     protected open fun vertxOptions(): VertxOptions {
-        val options = config.value<JsonObject>("vertxOptions").let {
+        val vertxOptionsJson = config.value<JsonObject>("vertxOptions")
+        val options = vertxOptionsJson.let {
             if (it != null) log.info(it)
             when(it) {
                 null -> VertxOptions()
@@ -77,19 +76,26 @@ open class VertxBeansBase {
             env.getProperty("vertx.internal-blocking-pool-size", Int::class.java)?.let{ options.internalBlockingPoolSize = it }
             env.getProperty("vertx.ha-group", "").let{ options.haGroup = it }
             env.getProperty("vertx.quorum-size", Int::class.java)?.let{ options.quorumSize = it }
-            env.getProperty("vertx.cluster-port", Int::class.java)?.let{ options.clusterPort = it }
-            env.getProperty("vertx.cluster-ping-interval", Long::class.java)?.let{ options.clusterPingInterval = it }
-            env.getProperty("vertx.cluster-ping-reply-interval", Long::class.java)?.let{ options.clusterPingReplyInterval = it }
-            env.getProperty("vertx.cluster-public-host", String::class.java)?.let{ options.clusterPublicHost = it }
-            env.getProperty("vertx.cluster-public-port", Int::class.java)?.let{ options.clusterPublicPort = it }
+            env.getProperty("vertx.cluster-port", Int::class.java)?.let{ options.eventBusOptions.port = it }
+            env.getProperty("vertx.cluster-ping-interval", Long::class.java)?.let{ options.eventBusOptions.clusterPingInterval = it }
+            env.getProperty("vertx.cluster-ping-reply-interval", Long::class.java)?.let{ options.eventBusOptions.clusterPingReplyInterval = it }
+            env.getProperty("vertx.cluster-public-host", String::class.java)?.let{ options.eventBusOptions.clusterPublicHost = it }
+            env.getProperty("vertx.cluster-public-port", Int::class.java)?.let{ options.eventBusOptions.clusterPublicPort = it }
 
-            options.isClustered = env.getProperty("vertx.clustered", Boolean::class.java, options.isClustered )
-            options.clusterHost = env.getProperty("vertx.cluster-host", if (config.value<JsonObject>("vertxOptions")?.containsKey("clusterHost") == true) options.clusterHost else defaultAddress)
+            options.eventBusOptions.isClustered = env.getProperty("vertx.clustered", Boolean::class.java, options.eventBusOptions.isClustered )
+            options.eventBusOptions.host = env.getProperty("vertx.cluster-host", if (config.value<JsonObject>("vertxOptions")?.containsKey("clusterHost") == true) options.eventBusOptions.host else defaultAddress)
             options.isHAEnabled = env.getProperty("vertx.ha-enabled", Boolean::class.java, options.isHAEnabled )
         }
-        if (options.isClustered && clusterManager != null) options.clusterManager = clusterManager
+        if (options.eventBusOptions.isClustered && clusterManager != null) options.clusterManager = clusterManager
         if (metricsOptions != null) options.metricsOptions = metricsOptions
         if (eventBusOptions != null) options.eventBusOptions = eventBusOptions
+        return options
+    }
+
+    /**
+     * Auto custom vertxOption
+     * */
+    open fun vertxOptions(options: VertxOptions, vertxOptionsJson: JsonObject): VertxOptions {
         return options
     }
 
