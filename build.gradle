@@ -17,7 +17,7 @@ apply plugin: 'com.novoda.bintray-release'
 
 ext {
     kotlinVersion = '1.3.0'
-    vertxVersion = '3.6.2'
+    vertxVersion = '3.8.1'
     springVersion = '5.1.4.RELEASE'
 }
 repositories {
@@ -52,11 +52,11 @@ jar {
 }
 
 publish {
-    repoName = 'vts'
+    repoName = 'vs'
     userOrg = 'kavi'
-    groupId = 'com.kavi'
-    artifactId = 'vertx-beans'
-    publishVersion = '1.3.0'
+    groupId = 'tech.kavi'
+    artifactId = 'vs-core'
+    publishVersion = '1.3.4'
     desc = 'Vertx with Spring Integration by kotlin'
-    website = 'https://vts.kavi.tech'
+    website = 'https://vs.kavi.tech'
 }

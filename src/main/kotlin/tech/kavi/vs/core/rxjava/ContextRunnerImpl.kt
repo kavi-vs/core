@@ -14,7 +14,7 @@ import java.util.function.Supplier
 class ContextRunnerImpl(private val delegate: tech.kavi.vs.core.ContextRunner) : ContextRunner {
 
     override fun <T> execute(instances: Int, supplier: Supplier<Observable<T>>): Observable<List<T>> {
-        return Observable.create { subscriber -> doExecute(subscriber, instances, supplier) }
+        return Observable.unsafeCreate { subscriber -> doExecute(subscriber, instances, supplier) }
     }
 
     @Throws(InterruptedException::class, ExecutionException::class, TimeoutException::class)

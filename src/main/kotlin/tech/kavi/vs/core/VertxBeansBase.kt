@@ -4,6 +4,7 @@ import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 import io.vertx.core.VertxOptions
 import io.vertx.core.eventbus.EventBusOptions
+import io.vertx.core.eventbus.impl.clustered.ClusteredEventBus
 import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.LoggerFactory
@@ -31,16 +32,12 @@ import java.util.concurrent.TimeUnit.MINUTES
  */
 open class VertxBeansBase {
 
-    @Autowired(required = false)
-    private val clusterManager: ClusterManager? = null
+    open val clusterManager: ClusterManager? = null
 
-    @Autowired(required = false)
-    private val eventBusOptions: EventBusOptions? = null
+    open val eventBusOptions: EventBusOptions? = null
 
-    @Autowired(required = false)
-    private val metricsOptions: MetricsOptions? = null
+    open val metricsOptions: MetricsOptions? = null
 
-    @Autowired
     private val env: Environment? = null
 
     open val CONFIG_PATH = "config.json"
