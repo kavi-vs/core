@@ -58,7 +58,7 @@ open class VertxBeansBase {
 
     @Bean
     protected open fun vertxOptions(): VertxOptions {
-        val vertxOptionsJson = config.value<JsonObject>("vertxOptions")
+        val vertxOptionsJson = config.value<JsonObject>("VertxOptions")
         val options = vertxOptionsJson.let {
             if (it != null) log.info(it)
             when(it) {
@@ -83,7 +83,7 @@ open class VertxBeansBase {
             env.getProperty("vertx.cluster-public-port", Int::class.java)?.let{ options.eventBusOptions.clusterPublicPort = it }
 
             options.eventBusOptions.isClustered = env.getProperty("vertx.clustered", Boolean::class.java, options.eventBusOptions.isClustered )
-            options.eventBusOptions.host = env.getProperty("vertx.cluster-host", if (config.value<JsonObject>("vertxOptions")?.containsKey("clusterHost") == true) options.eventBusOptions.host else defaultAddress)
+            options.eventBusOptions.host = env.getProperty("vertx.cluster-host", if (vertxOptionsJson?.containsKey("clusterHost") == true) options.eventBusOptions.host else defaultAddress)
             options.isHAEnabled = env.getProperty("vertx.ha-enabled", Boolean::class.java, options.isHAEnabled )
         }
 
