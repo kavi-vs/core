@@ -19,7 +19,7 @@ open class VertxBeans : VertxBeansBase() {
     @Throws(Throwable::class)
     open fun vertx(options: VertxOptions) = options.let {
         when {
-            it.isClustered -> clusteredVertx(it)
+            it.eventBusOptions.isClustered -> clusteredVertx(it)
             else -> Vertx.vertx(it)
         }
     }

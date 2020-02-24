@@ -30,12 +30,6 @@ import java.util.concurrent.TimeUnit.MINUTES
  */
 open class VertxBeansBase {
 
-    open val clusterManager: ClusterManager? = null
-
-    open val eventBusOptions: EventBusOptions? = null
-
-    open val metricsOptions: MetricsOptions? = null
-
     open val environment: Environment? = null
 
     open val CONFIG_PATH = "config.json"
@@ -86,18 +80,32 @@ open class VertxBeansBase {
             options.eventBusOptions.host = env.getProperty("vertx.cluster-host", if (vertxOptionsJson?.containsKey("clusterHost") == true) options.eventBusOptions.host else defaultAddress)
             options.isHAEnabled = env.getProperty("vertx.ha-enabled", Boolean::class.java, options.isHAEnabled )
         }
+        if (options.eventBusOptions.isClustered) {
+            clusterManager(config)?.also { options.clusterManager = it }
+        }
+        eventBusOptions(config)?.also { options.eventBusOptions = it }
+        metricsOptions(config)?.also { options.metricsOptions = it }
 
-        if (options.eventBusOptions.isClustered && clusterManager != null) options.clusterManager = clusterManager
-        if (metricsOptions != null) options.metricsOptions = metricsOptions
-        if (eventBusOptions != null) options.eventBusOptions = eventBusOptions
         return vertxOptions(options, vertxOptionsJson)
     }
 
     /**
-     * Auto custom vertxOption
+     * custom vertxOption
      * */
     open fun vertxOptions(options: VertxOptions, vertxOptionsJson: JsonObject?): VertxOptions {
         return options
+    }
+
+    open fun clusterManager(config: JsonObject): ClusterManager ?{
+        return null
+    }
+
+    open fun eventBusOptions(config: JsonObject): EventBusOptions ?{
+        return null
+    }
+
+    open fun metricsOptions(config: JsonObject): MetricsOptions ?{
+        return null
     }
 
     @Throws(InterruptedException::class, ExecutionException::class, TimeoutException::class)
