@@ -36,7 +36,7 @@ open class VertxBeansBase {
 
     open val metricsOptions: MetricsOptions? = null
 
-    private val env: Environment? = null
+    open val environment: Environment? = null
 
     open val CONFIG_PATH = "config.json"
 
@@ -66,7 +66,7 @@ open class VertxBeansBase {
                 else -> VertxOptions(it)
             }
         }
-        if (env != null) {
+        environment?.also { env ->
             env.getProperty("vertx.warning-exception-time", Long::class.java)?.let{options.warningExceptionTime = it}
             env.getProperty("vertx.event-loop-pool-size", Int::class.java)?.let{ options.eventLoopPoolSize = it }
             env.getProperty("vertx.max-event-loop-execution-time", Long::class.java)?.let{ options.maxEventLoopExecuteTime = it }
@@ -86,16 +86,17 @@ open class VertxBeansBase {
             options.eventBusOptions.host = env.getProperty("vertx.cluster-host", if (config.value<JsonObject>("vertxOptions")?.containsKey("clusterHost") == true) options.eventBusOptions.host else defaultAddress)
             options.isHAEnabled = env.getProperty("vertx.ha-enabled", Boolean::class.java, options.isHAEnabled )
         }
+
         if (options.eventBusOptions.isClustered && clusterManager != null) options.clusterManager = clusterManager
         if (metricsOptions != null) options.metricsOptions = metricsOptions
         if (eventBusOptions != null) options.eventBusOptions = eventBusOptions
-        return options
+        return vertxOptions(options, vertxOptionsJson)
     }
 
     /**
      * Auto custom vertxOption
      * */
-    open fun vertxOptions(options: VertxOptions, vertxOptionsJson: JsonObject): VertxOptions {
+    open fun vertxOptions(options: VertxOptions, vertxOptionsJson: JsonObject?): VertxOptions {
         return options
     }
 
@@ -152,6 +153,9 @@ open class VertxBeansBase {
             }
         }
 
+        inline fun <reified T> JsonObject?.value(key: String, default: T): T {
+            return this.value<T>(key) ?: default
+        }
 
         /**
          * 读取json文件并解析成json格式
