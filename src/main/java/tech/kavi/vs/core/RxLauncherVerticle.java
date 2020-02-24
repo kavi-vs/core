@@ -1,7 +1,7 @@
 package tech.kavi.vs.core;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Vertx;
+import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.Vertx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 
 @Component
-public  abstract class LauncherVerticle extends AbstractVerticle implements ApplicationListener {
+public  abstract class RxLauncherVerticle extends AbstractVerticle implements ApplicationListener {
 
     public static AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 

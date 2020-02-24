@@ -61,7 +61,7 @@ publish {
     userOrg = 'kavi'
     groupId = 'tech.kavi'
     artifactId = 'vs-core'
-    publishVersion = '3.0.1'
+    publishVersion = '3.1.0'
     desc = 'Vertx with Spring Integration by kotlin'
     website = 'https://vs.kavi.tech'
 }
